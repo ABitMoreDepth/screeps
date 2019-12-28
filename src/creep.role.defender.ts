@@ -1,4 +1,4 @@
-import { go_relax } from './utils';
+import { goRelax } from './utils';
 
 if (!Memory.population) {
   Memory.population = {
@@ -18,6 +18,6 @@ export function defender(creep: Creep) {
     }
   }
   else {
-    go_relax(creep)
+    goRelax(creep)
   }
 }

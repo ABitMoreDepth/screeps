@@ -1,4 +1,4 @@
-import { go_relax, harvest_nearest_energy } from './utils';
+import { goRelax, harvest_nearest_energy } from './utils';
 
 if (!Memory.population) {
   Memory['population'] = {
@@ -60,7 +60,7 @@ export function harvester(creep: Creep) {
             creep.moveTo(target)
           }
         } else {
-          go_relax(creep)
+          goRelax(creep)
         }
       }
     }

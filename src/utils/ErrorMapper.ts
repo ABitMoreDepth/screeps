@@ -82,6 +82,7 @@ export class ErrorMapper {
           }
         } else {
           // can't handle it
+          console.log('Caught an unhandled error.');
           throw e;
         }
       }

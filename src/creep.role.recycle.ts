@@ -1,4 +1,4 @@
-import { go_relax } from './utils';
+import { goRelax } from './utils';
 
 export function recycle(creep: Creep) {
   // Lets have some time to think about this
@@ -6,7 +6,7 @@ export function recycle(creep: Creep) {
     creep.memory['state'] = 10
   } else if (creep.memory.state > 0) {
     creep.memory.state -= 1
-    go_relax(creep)
+    goRelax(creep)
   }
   if (creep.memory.state == 0) {
     let spawn = creep.pos.findClosestByRange(FIND_MY_SPAWNS)
@@ -15,7 +15,7 @@ export function recycle(creep: Creep) {
         creep.moveTo(spawn)
       }
     } else {
-      go_relax(creep)
+      goRelax(creep)
     }
   }
 }

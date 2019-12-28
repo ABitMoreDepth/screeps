@@ -1,5 +1,5 @@
 // let utils = require('utils')
-import { go_relax } from './utils';
+import { goRelax } from './utils';
 
 export function regenerate(creep: Creep) {
   if (creep.ticksToLive !== undefined && creep.ticksToLive < 1500 * 0.90) {
@@ -9,7 +9,7 @@ export function regenerate(creep: Creep) {
         creep.moveTo(spawn)
       }
     } else {
-      go_relax(creep)
+      goRelax(creep)
     }
   } else {
     // feeling spritely again!

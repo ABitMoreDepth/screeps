@@ -75,11 +75,11 @@ export function collect_nearest_energy(creep: Creep): void {
       creep.moveTo(source)
     }
   } else {
-    go_relax(creep)
+    goRelax(creep)
   }
 }
 
-export function go_relax(creep: Creep): void {
+export function goRelax(creep: Creep): void {
   let flag = creep.pos.findClosestByRange(FIND_FLAGS)
   if (flag !== null) {
     creep.moveTo(flag)

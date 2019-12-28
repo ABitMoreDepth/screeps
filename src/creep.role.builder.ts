@@ -1,4 +1,4 @@
-import { go_relax, collect_nearest_energy } from './utils';
+import { goRelax, collect_nearest_energy } from './utils';
 
 if (!Memory.population) {
   Memory.population = {
@@ -54,7 +54,7 @@ export function builder(creep: Creep) {
         return;
       }
 
-      go_relax(creep);
+      goRelax(creep);
     }
   }
   else {
