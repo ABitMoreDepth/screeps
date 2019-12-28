@@ -1,56 +1,56 @@
-var utils = require('utils')
+import { get_full_extractor, find_nearest_energy_collection_point } from './utils';
 
 if (!Memory.population) {
   Memory.population = {
-    hauler: 0,
+    distributor: 2,
   }
 } else if (!Memory.population.hauler) {
-  Memory.population.hauler = 0
+  Memory.population.distributor = 2
 }
 
-function hauler(creep) {
-  if(creep.memory.state && creep.carry.energy == 0) {
+export function distributor(creep: Creep) {
+  if (creep.memory.state && creep.carry.energy == 0) {
     creep.memory.state = false
   }
-  if(!creep.memory.state && creep.carry.energy == creep.carryCapacity) {
+  if (!creep.memory.state && creep.carry.energy == creep.carryCapacity) {
     creep.memory.state = true
   }
 
   if (!creep.memory.state) {
-    var source = utils.get_full_extractor(creep)
-    if (source) {
+    let source = get_full_extractor(creep)
+    if (source !== null) {
       console.log(JSON.stringify(source))
       if (source.transfer(creep, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
         creep.moveTo(source)
       }
     }
     else {
-      source = utils.find_nearest_energy_collection_point(creep)
-      if (source && (source.structureType !== STRUCTURE_SPAWN
-          || source.structureType !== STRUCTURE_EXTENSION)) {
-        if (source.transfer(creep, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+      let source = find_nearest_energy_collection_point(creep)
+
+      if (source !== null) {
+        if (creep.withdraw(source, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
           creep.moveTo(source)
         }
       }
     }
   }
 
-  if (creep.memory.state){
-    target = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+  if (creep.memory.state) {
+    let target = creep.pos.findClosestByPath(FIND_STRUCTURES, {
       filter: (structure) => {
         return (
           (structure.structureType == STRUCTURE_EXTENSION
-          || structure.structureType == STRUCTURE_SPAWN)
+            || structure.structureType == STRUCTURE_SPAWN)
           && structure.energy < structure.energyCapacity)
       }
     })
-    if(target) {
-      if(creep.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+    if (target) {
+      if (creep.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
         creep.moveTo(target)
       }
     }
     else {
-      var target = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+      let target = creep.pos.findClosestByPath(FIND_STRUCTURES, {
         filter: (structure) => {
           return (
             (structure.structureType == STRUCTURE_TOWER)
@@ -58,8 +58,8 @@ function hauler(creep) {
           )
         }
       })
-      if(target) {
-        if(creep.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+      if (target) {
+        if (creep.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
           creep.moveTo(target)
         }
       }
@@ -69,5 +69,3 @@ function hauler(creep) {
     }
   }
 }
-
-module.exports = hauler

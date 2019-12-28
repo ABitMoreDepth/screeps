@@ -2,14 +2,19 @@
 
 // memory extension samples
 interface CreepMemory {
-  role: string;
-  room: string;
-  working: boolean;
+  role?: string;
+  room?: string;
+  working?: boolean;
+  upgrading?: boolean;
+  state?: boolean | number;
+  unit_type?: string;
+  lvl?: number;
 }
 
 interface Memory {
-  uuid: number;
-  log: any;
+  population: any;
+  defense: { wall_health: number };
+  socialStructure: Array<string>;
 }
 
 // `global` extension samples
