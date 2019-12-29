@@ -1,6 +1,6 @@
-import { roles } from './creep.roles';
+import { roles } from './roles/roles';
 import { unit_types } from './creep.types';
-import { getSpawn, equals } from './utils';
+import { getSpawn, equals } from './utils/common';
 
 if (!Memory.defense) {
   Memory.defense = {
@@ -52,9 +52,9 @@ function undertaker() {
 
 function spawn_units(current_room: Room) {
   let max_build_energy = current_room.energyCapacityAvailable
-  // console.log(JSON.stringify(current_room))
-  // console.log('max:',max_build_energy, 'Available:',
-  //             current_room.energyAvailable)
+  console.log(JSON.stringify(current_room))
+  console.log('max:', max_build_energy, 'Available:',
+    current_room.energyAvailable)
 
   let needed_workers = Memory.population.builder
     + Memory.population.harvester
@@ -229,6 +229,7 @@ function workersUnion() {
       creeps_assignments.push(Memory.socialStructure[unit_role])
     }
   }
+  console.log(`Creep assignmens: ${creeps_assignments}`);
 
   // Create an ordered list of creeps (hashes are not numbered)
   let creeps_list = _.filter(

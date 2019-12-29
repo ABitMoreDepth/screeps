@@ -1,9 +1,9 @@
 export let priority = [
   'harvester',
+  'upgrader',
+  'builder',
   'distributor',
   'hauler',
-  'builder',
-  'upgrader',
   'defender',
   'extractor'
 ]
@@ -15,21 +15,21 @@ if (!Memory.socialStructure) {
 }
 
 // Worker roles
-import { builder } from './creep.role.builder';
-import { extractor } from './creep.role.extractor';
-import { harvester } from './creep.role.harvester';
-import { upgrader } from './creep.role.upgrader';
+import { builder } from './role.builder';
+import { extractor } from './role.extractor';
+import { harvester } from './role.harvester';
+import { upgrader } from './role.upgrader';
 
 // Carrier Roles
-import { distributor } from './creep.role.distributor';
-import { hauler } from './creep.role.hauler';
+import { distributor } from './role.distributor';
+import { hauler } from './role.hauler';
 
 // Fighter roles
-import { defender } from './creep.role.defender';
+import { defender } from './role.defender';
 
 // Misc
-import { recycle } from './creep.role.recycle';
-import { regenerate } from './creep.role.regenerate';
+import { recycle } from './role.recycle';
+import { regenerate } from './role.regenerate';
 
 export let roles: { [index: string]: (creep: Creep) => void } = {
 

@@ -1,10 +1,10 @@
-import { get_full_extractor, find_nearest_energy_collection_point } from './utils';
+import { get_full_extractor, find_nearest_energy_collection_point } from '../utils/common';
 
 if (!Memory.population) {
   Memory.population = {
-    distributor: 2,
+    distributor: 0,
   }
-} else if (!Memory.population.hauler) {
+} else if (!Memory.population.distributor) {
   Memory.population.distributor = 2
 }
 

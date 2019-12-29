@@ -1,4 +1,4 @@
-import { goRelax } from './utils';
+import { goRelax } from '../utils/common';
 
 if (!Memory.population) {
   Memory.population = {

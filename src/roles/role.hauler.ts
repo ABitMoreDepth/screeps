@@ -1,4 +1,4 @@
-import { get_full_extractor, find_nearest_energy_collection_point } from './utils';
+import { get_full_extractor, find_nearest_energy_collection_point } from '../utils/common';
 
 if (!Memory.population) {
   Memory.population = {

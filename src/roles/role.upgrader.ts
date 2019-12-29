@@ -1,4 +1,4 @@
-import { collect_nearest_energy } from './utils';
+import { collect_nearest_energy } from '../utils/common';
 
 if (!Memory.population) {
   Memory.population = {

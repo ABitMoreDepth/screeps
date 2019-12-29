@@ -1,5 +1,5 @@
 // let utils = require('utils')
-import { goRelax } from './utils';
+import { goRelax } from '../utils/common';
 
 export function regenerate(creep: Creep) {
   if (creep.ticksToLive !== undefined && creep.ticksToLive < 1500 * 0.90) {

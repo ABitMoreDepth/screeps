@@ -1,4 +1,4 @@
-import { goRelax } from './utils';
+import { goRelax } from '../utils/common';
 
 export function recycle(creep: Creep) {
   // Lets have some time to think about this

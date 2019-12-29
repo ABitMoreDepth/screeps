@@ -1,4 +1,4 @@
-import { goRelax, collect_nearest_energy } from './utils';
+import { goRelax, collect_nearest_energy } from '../utils/common';
 
 if (!Memory.population) {
   Memory.population = {
