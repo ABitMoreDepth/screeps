@@ -6,7 +6,7 @@ interface CreepMemory {
   room?: string;
   working?: boolean;
   upgrading?: boolean;
-  state?: boolean | number;
+  state?: number | string;
   unit_type?: string;
   lvl?: number;
 }
@@ -22,4 +22,12 @@ declare namespace NodeJS {
   interface Global {
     log: any;
   }
+}
+
+// The interface for a role.  Used to provide operation of creeps.
+interface CreepBehaviour {
+  creep: Creep;
+  nextRole?: CreepBehaviour;
+
+  run: () => void;
 }

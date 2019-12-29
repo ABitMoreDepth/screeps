@@ -21,3 +21,22 @@ export function defender(creep: Creep) {
     goRelax(creep);
   }
 }
+
+class DefenderRole implements CreepBehaviour {
+  public creep: Creep;
+  constructor(creep: Creep) {
+    if (!Memory.population) {
+      Memory.population = {
+        defender: 0,
+      };
+    } else if (!Memory.population.defender) {
+      Memory.population.defender = 0;
+    }
+
+    this.creep = creep;
+  }
+
+  public run() {
+    defender(this.creep);
+  }
+}

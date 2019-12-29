@@ -9,14 +9,14 @@ if (!Memory.population) {
 }
 
 export function distributor(creep: Creep) {
-  if (creep.memory.state && creep.carry.energy === 0) {
-    creep.memory.state = false;
+  if (creep.memory.state === 'distribute' && creep.carry.energy === 0) {
+    creep.memory.state = 'refill';
   }
-  if (!creep.memory.state && creep.carry.energy === creep.carryCapacity) {
-    creep.memory.state = true;
+  if (creep.memory.state !== 'distribute' && creep.carry.energy === creep.carryCapacity) {
+    creep.memory.state = 'distribute';
   }
 
-  if (!creep.memory.state) {
+  if (creep.memory.state !== 'distribute') {
     const source = get_full_extractor(creep);
     if (source !== null) {
       console.log(JSON.stringify(source));
@@ -67,5 +67,44 @@ export function distributor(creep: Creep) {
         creep.moveTo(Game.flags.Chillout);
       }
     }
+  }
+}
+
+class DistributorRole implements CreepBehaviour {
+  public creep: Creep;
+
+  constructor(creep: Creep) {
+    if (!Memory.population) {
+      Memory.population = {
+        distributor: 0,
+      };
+    } else if (!Memory.population.distributor) {
+      Memory.population.distributor = 2;
+    }
+
+    this.creep = creep;
+    if (this.creep.memory.state === undefined || this.creep.memory.state !== 'refill') {
+      this.creep.memory.state = 'refill';
+    }
+  }
+
+  private isEmpty(): boolean {
+    if (this.creep.carry.energy === 0) {
+      this.creep.memory.state = 'refill';
+      return true;
+    }
+    return false;
+  }
+
+  private isFull(): boolean {
+    if (this.creep.carry.energy === this.creep.carryCapacity) {
+      this.creep.memory.state = 'full';
+      return true;
+    }
+    return false;
+  }
+
+  public run(): void {
+    distributor(this.creep);
   }
 }

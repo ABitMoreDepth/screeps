@@ -49,4 +49,5 @@ export let roles: { [index: string]: (creep: Creep) => void } = {
   // Misc
   'recycle': recycle,
   'regenerate': regenerate,
+  'upgrade': recycle,
 };

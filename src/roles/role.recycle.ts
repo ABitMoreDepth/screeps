@@ -19,3 +19,15 @@ export function recycle(creep: Creep) {
     }
   }
 }
+
+class RecycleRole implements CreepBehaviour {
+  public creep: Creep;
+
+  constructor(creep: Creep) {
+    this.creep = creep;
+  }
+
+  public run() {
+    recycle(this.creep);
+  }
+}

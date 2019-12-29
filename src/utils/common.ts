@@ -27,7 +27,7 @@ export function equals(array1: any[], array2: any[]): boolean {
 }
 
 export function harvest_nearest_energy(creep: Creep) {
-  const source = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
+  const source: Source | null = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
   if (source === null) { return; }
 
   if (creep.harvest(source as Source) === ERR_NOT_IN_RANGE) {
@@ -69,7 +69,7 @@ export function find_nearest_energy_collection_point(creep: Creep): StructureSto
   return null;
 }
 
-export function collect_nearest_energy(creep: Creep): void {
+export function collectNearestEnergy(creep: Creep): void {
   const source = find_nearest_energy_collection_point(creep);
   if (source) {
     if (creep.withdraw(source, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {

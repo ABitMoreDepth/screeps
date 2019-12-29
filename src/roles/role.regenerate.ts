@@ -17,4 +17,14 @@ export function regenerate(creep: Creep) {
   }
 }
 
-module.exports = regenerate;
+class RegenerateRole implements CreepBehaviour {
+  public creep: Creep;
+
+  constructor(creep: Creep) {
+    this.creep = creep;
+  }
+
+  public run() {
+    regenerate(this.creep);
+  }
+}

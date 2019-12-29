@@ -1,4 +1,4 @@
-import { collect_nearest_energy, goRelax } from '../utils/common';
+import { collectNearestEnergy, goRelax } from '../utils/common';
 
 if (!Memory.population) {
   Memory.population = {
@@ -9,35 +9,34 @@ if (!Memory.population) {
 }
 
 export function builder(creep: Creep) {
-  if (creep.memory.state && creep.carry.energy === 0) {
-    creep.memory.state = false;
-  }
-  if (!creep.memory.state && creep.carry.energy === creep.carryCapacity) {
-    creep.memory.state = true;
+  if (creep.memory.state === undefined || !creep.memory.state.toString().match(/^building|refill$/)) {
+    creep.memory.state = 'refill';
   }
 
-  if (creep.memory.state) {
-    const urgentRepairTarget: Structure | null = creep.pos.findClosestByRange(FIND_STRUCTURES, {
-      filter: (structure) => (
-        structure.hits < 1000
-      )
-    });
-    if (urgentRepairTarget !== null) {
-      if (creep.repair(urgentRepairTarget) === ERR_NOT_IN_RANGE) {
-        creep.moveTo(urgentRepairTarget);
-        return;
-      }
-    }
+  if (creep.memory.state === 'building' && creep.carry.energy === 0) {
+    creep.say('Need Fuel');
+    creep.memory.state = 'refill';
+  }
+  if (creep.memory.state === 'refill' && creep.carry.energy === creep.carryCapacity) {
+    creep.say('Lets build');
+    creep.memory.state = 'building';
+  }
 
-    const buildTarget = creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES);
+  if (creep.memory.state === 'refill') {
+    collectNearestEnergy(creep);
+    return;
+  }
+
+  if (creep.memory.state === 'building') {
+    const buildTarget: ConstructionSite | null = creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES);
     if (buildTarget !== null) {
       if (creep.build(buildTarget) === ERR_NOT_IN_RANGE) {
         creep.moveTo(buildTarget);
-        return;
       }
+      return;
     }
 
-    let repairTarget = creep.pos.findClosestByRange(FIND_STRUCTURES, {
+    let repairTarget: Structure | null = creep.pos.findClosestByRange(FIND_STRUCTURES, {
       filter: (structure) => (
         structure.hits < structure.hitsMax * 0.95 &&
         structure.structureType !== STRUCTURE_WALL &&
@@ -47,8 +46,8 @@ export function builder(creep: Creep) {
     if (repairTarget !== null) {
       if (creep.repair(repairTarget) === ERR_NOT_IN_RANGE) {
         creep.moveTo(repairTarget);
-        return;
       }
+      return;
     }
 
     repairTarget = creep.pos.findClosestByRange(FIND_STRUCTURES,
@@ -63,13 +62,22 @@ export function builder(creep: Creep) {
     if (repairTarget !== null) {
       if (creep.repair(repairTarget) === ERR_NOT_IN_RANGE) {
         creep.moveTo(repairTarget);
-        return;
       }
-
-      goRelax(creep);
+      return;
     }
+
+    creep.say('Chilling');
+    goRelax(creep);
   }
-  else {
-    collect_nearest_energy(creep);
+}
+
+class BuilderRole implements CreepBehaviour {
+  public creep: Creep;
+  constructor(creep: Creep) {
+    this.creep = creep;
+  }
+
+  public run() {
+    builder(this.creep);
   }
 }
