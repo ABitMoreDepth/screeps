@@ -2,10 +2,10 @@ import { collectNearestEnergy, goRelax } from '../utils/common';
 
 if (!Memory.population) {
   Memory.population = {
-    builder: 2,
+    builder: 4,
   };
 } else if (!Memory.population.builder) {
-  Memory.population.builder = 2;
+  Memory.population.builder = 4;
 }
 
 export function builder(creep: Creep) {

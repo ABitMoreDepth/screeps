@@ -11,7 +11,7 @@ if (!Memory.defense) {
 export let creepManager = {
   manage(currentRoom: Room) {
     undertaker();
-    spawn_units(currentRoom);
+    spawnUnits(currentRoom);
     workersUnion();
   },
 
@@ -50,17 +50,20 @@ function undertaker() {
   }
 }
 
-function spawn_units(currentRoom: Room) {
+function spawnUnits(currentRoom: Room) {
   const maxBuildEnergy = currentRoom.energyCapacityAvailable;
   console.log(JSON.stringify(currentRoom));
   console.log('max:', maxBuildEnergy, 'Available:',
     currentRoom.energyAvailable);
 
-  const neededWorkers = Memory.population.builder
-    + Memory.population.harvester
-    + Memory.population.upgrader
-    + Memory.population.hauler
-    + Memory.population.extractor || 0;
+  let neededWorkers: number = 0;
+  for (const workerType in Memory.population) {
+    neededWorkers += Memory.population[workerType];
+  }
+  if (Memory.population.defender !== undefined) {
+    neededWorkers -= Memory.population.defender;
+  }
+
   const neededFighters = Memory.population.defender || 0;
 
   const populationWorkers = _.filter(
@@ -86,10 +89,10 @@ function spawn_units(currentRoom: Room) {
 
 
   // console.log('Needed Workers:', neededWorkers, 'Worker pop:',
-  //             populationWorkers.length)
+  //   populationWorkers.length);
   // console.log('Needed Fighters:', neededFighters, ', Fighter pop:',
-  //             populationFighters.length)
-  // console.log('Unknown Pop:', populationUnknown.length)
+  //   populationFighters.length);
+  // console.log('Unknown Pop:', populationUnknown.length);
 
   if (populationWorkers.length < neededWorkers
     && populationRegenerates.length === 0) {
