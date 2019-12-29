@@ -1,94 +1,26 @@
 type partsDef = Array<MOVE | WORK | CARRY | ATTACK | RANGED_ATTACK | TOUGH | HEAL | CLAIM>;
 
-interface unitType {
-  'u_body': partsDef;
-  'u_mem': CreepMemory;
-  'u_cost': number;
+interface UnitType {
+  'uBody': partsDef;
+  'uMem': CreepMemory;
+  'uCost': number;
 }
 
-const worker_1: unitType = {
-  u_body: [
+const worker1: UnitType = {
+  uBody: [
     WORK,
     CARRY,
     MOVE,
     MOVE
   ],
-  u_mem: { unit_type: 'worker', lvl: 1 },
-  u_cost: 100 + 50 + (50 * 2)
+  uCost: 100 + 50 + (50 * 2),
+  uMem: { unit_type: 'worker', lvl: 1 },
 };
 
-const worker_2: unitType = {
-  u_body: [
+const worker2: UnitType = {
+  uBody: [
     WORK,
     WORK,
-    CARRY,
-    CARRY,
-    MOVE,
-    MOVE,
-    MOVE,
-    MOVE
-  ],
-  u_mem: { unit_type: 'worker', lvl: 2 },
-  u_cost: (100 * 2) + (50 * 2) + (50 * 4)
-};
-
-const worker_3: unitType = {
-  u_body: [
-    WORK,
-    WORK,
-    WORK,
-    CARRY,
-    CARRY,
-    CARRY,
-    MOVE,
-    MOVE,
-    MOVE,
-    MOVE,
-    MOVE,
-    MOVE
-  ],
-  u_mem: { unit_type: 'worker', lvl: 3 },
-  u_cost: (100 * 3) + (50 * 3) + (50 * 6)
-};
-
-const worker_4: unitType = {
-  u_body: [
-    WORK,
-    WORK,
-    WORK,
-    WORK,
-    CARRY,
-    CARRY,
-    CARRY,
-    CARRY,
-    MOVE,
-    MOVE,
-    MOVE,
-    MOVE,
-    MOVE,
-    MOVE,
-    MOVE,
-    MOVE
-  ],
-  u_mem: { unit_type: 'worker', lvl: 4 },
-  u_cost: (100 * 4) + (50 * 4) + (50 * 8)
-};
-
-const carrier_1: unitType = {
-  u_body: [
-    CARRY,
-    CARRY,
-    MOVE,
-    MOVE
-  ],
-  u_mem: { unit_type: 'carrier', lvl: 1 },
-  u_cost: (50 * 2) + (50 * 2)
-};
-
-const carrier_2: unitType = {
-  u_body: [
-    CARRY,
-    CARRY,
     CARRY,
     CARRY,
     MOVE,
@@ -96,15 +28,15 @@ const carrier_2: unitType = {
     MOVE,
     MOVE
   ],
-  u_mem: { unit_type: 'carrier', lvl: 2 },
-  u_cost: (50 * 4) + (50 * 4)
+  uCost: (100 * 2) + (50 * 2) + (50 * 4),
+  uMem: { unit_type: 'worker', lvl: 2 },
 };
 
-const carrier_3: unitType = {
-  u_body: [
-    CARRY,
-    CARRY,
-    CARRY,
+const worker3: UnitType = {
+  uBody: [
+    WORK,
+    WORK,
+    WORK,
     CARRY,
     CARRY,
     CARRY,
@@ -115,16 +47,16 @@ const carrier_3: unitType = {
     MOVE,
     MOVE
   ],
-  u_mem: { unit_type: 'carrier', lvl: 3 },
-  u_cost: (50 * 6) + (50 * 6)
+  uCost: (100 * 3) + (50 * 3) + (50 * 6),
+  uMem: { unit_type: 'worker', lvl: 3 },
 };
 
-const carrier_4: unitType = {
-  u_body: [
-    CARRY,
-    CARRY,
-    CARRY,
-    CARRY,
+const worker4: UnitType = {
+  uBody: [
+    WORK,
+    WORK,
+    WORK,
+    WORK,
     CARRY,
     CARRY,
     CARRY,
@@ -138,24 +70,92 @@ const carrier_4: unitType = {
     MOVE,
     MOVE
   ],
-  u_mem: { unit_type: 'carrier', lvl: 4 },
-  u_cost: (50 * 8) + (50 * 8)
+  uCost: (100 * 4) + (50 * 4) + (50 * 8),
+  uMem: { unit_type: 'worker', lvl: 4 },
 };
 
-const defender_1: unitType = {
-  u_body: [
+const carrier1: UnitType = {
+  uBody: [
+    CARRY,
+    CARRY,
+    MOVE,
+    MOVE
+  ],
+  uCost: (50 * 2) + (50 * 2),
+  uMem: { unit_type: 'carrier', lvl: 1 },
+};
+
+const carrier2: UnitType = {
+  uBody: [
+    CARRY,
+    CARRY,
+    CARRY,
+    CARRY,
+    MOVE,
+    MOVE,
+    MOVE,
+    MOVE
+  ],
+  uCost: (50 * 4) + (50 * 4),
+  uMem: { unit_type: 'carrier', lvl: 2 },
+};
+
+const carrier3: UnitType = {
+  uBody: [
+    CARRY,
+    CARRY,
+    CARRY,
+    CARRY,
+    CARRY,
+    CARRY,
+    MOVE,
+    MOVE,
+    MOVE,
+    MOVE,
+    MOVE,
+    MOVE
+  ],
+  uCost: (50 * 6) + (50 * 6),
+  uMem: { unit_type: 'carrier', lvl: 3 },
+};
+
+const carrier4: UnitType = {
+  uBody: [
+    CARRY,
+    CARRY,
+    CARRY,
+    CARRY,
+    CARRY,
+    CARRY,
+    CARRY,
+    CARRY,
+    MOVE,
+    MOVE,
+    MOVE,
+    MOVE,
+    MOVE,
+    MOVE,
+    MOVE,
+    MOVE
+  ],
+  uCost: (50 * 8) + (50 * 8),
+  uMem: { unit_type: 'carrier', lvl: 4 },
+};
+
+const defender1: UnitType = {
+  uBody: [
     TOUGH,
     RANGED_ATTACK,
     RANGED_ATTACK,
     MOVE,
     MOVE
   ],
-  u_mem: { unit_type: 'defender', lvl: 1 },
-  u_cost: 10 + (50 * 2) + (150 * 2),
+  uCost: 10 + (50 * 2) + (150 * 2),
+  uMem: { unit_type: 'defender', lvl: 1 },
 };
 
-const extractor_1: unitType = {
-  u_body: [
+const extractor1: UnitType = {
+  uBody: [
     MOVE,
     WORK,
     WORK,
@@ -166,22 +166,22 @@ const extractor_1: unitType = {
     WORK,
     WORK
   ],
-  u_mem: { unit_type: 'extractor', lvl: 1 },
-  u_cost: 50 + (100 * 8)
+  uCost: 50 + (100 * 8),
+  uMem: { unit_type: 'extractor', lvl: 1 },
 };
 
-export const unit_types: { [index: string]: unitType } = {
-  worker_1,
-  worker_2,
-  worker_3,
-  worker_4,
+export const unitTypes: { [index: string]: UnitType } = {
+  worker1,
+  worker2,
+  worker3,
+  worker4,
 
-  carrier_1,
-  carrier_2,
-  carrier_3,
-  carrier_4,
+  carrier1,
+  carrier2,
+  carrier3,
+  carrier4,
 
-  defender_1,
+  defender1,
 
-  extractor_1
+  extractor1
 };

@@ -1,4 +1,4 @@
-import { unit_types } from './creep.types';
+import { unitTypes } from './creep.types';
 import { roles } from './roles/roles';
 import { equals, getSpawn } from './utils/common';
 
@@ -94,7 +94,7 @@ function spawn_units(currentRoom: Room) {
   if (populationWorkers.length < neededWorkers
     && populationRegenerates.length === 0) {
     // We have a deficit of workers, lets spawn some more!
-    if (maxBuildEnergy >= unit_types.worker_3.u_cost) {
+    if (maxBuildEnergy >= unitTypes.worker3.uCost) {
       if (_.filter(
         Game.creeps, (creep) => (
           creep.memory.role === Memory.socialStructure[0])
@@ -106,9 +106,9 @@ function spawn_units(currentRoom: Room) {
         const spawn: StructureSpawn | null = getSpawn();
         if (spawn === null) { return; }
         const newby = spawn.createCreep(
-          unit_types.worker_1.u_body,
+          unitTypes.worker1.uBody,
           undefined,
-          unit_types.worker_1.u_mem);
+          unitTypes.worker1.uMem);
         return;
       }
       console.log('Spawning lvl3 Worker');
@@ -116,13 +116,13 @@ function spawn_units(currentRoom: Room) {
 
       if (spawn !== null) {
         const newby = spawn.createCreep(
-          unit_types.worker_3.u_body,
+          unitTypes.worker3.uBody,
           undefined,
-          unit_types.worker_3.u_mem);
+          unitTypes.worker3.uMem);
         console.log(newby);
       }
     }
-    else if (maxBuildEnergy >= unit_types.worker_2.u_cost) {
+    else if (maxBuildEnergy >= unitTypes.worker2.uCost) {
       if (_.filter(
         Game.creeps, (creep) => (
           creep.memory.role === Memory.socialStructure[0])
@@ -134,9 +134,9 @@ function spawn_units(currentRoom: Room) {
         const spawn = getSpawn();
         if (spawn !== null) {
           const newby = spawn.createCreep(
-            unit_types.worker_1.u_body,
+            unitTypes.worker1.uBody,
             undefined,
-            unit_types.worker_1.u_mem);
+            unitTypes.worker1.uMem);
           return;
         }
       }
@@ -144,19 +144,19 @@ function spawn_units(currentRoom: Room) {
       const spawn = getSpawn();
       if (spawn !== null) {
         const newby = spawn.createCreep(
-          unit_types.worker_2.u_body,
+          unitTypes.worker2.uBody,
           undefined,
-          unit_types.worker_2.u_mem);
+          unitTypes.worker2.uMem);
       }
     }
-    else if (maxBuildEnergy >= unit_types.worker_1.u_cost) {
+    else if (maxBuildEnergy >= unitTypes.worker1.uCost) {
       console.log('Spawning lvl1 Worker');
       const spawn = getSpawn();
       if (spawn !== null) {
         const newby = spawn.createCreep(
-          unit_types.worker_1.u_body,
+          unitTypes.worker1.uBody,
           undefined,
-          unit_types.worker_1.u_mem);
+          unitTypes.worker1.uMem);
       }
     }
   }
@@ -166,26 +166,26 @@ function spawn_units(currentRoom: Room) {
     const spawn = getSpawn();
     if (spawn !== null) {
       const newby = spawn.createCreep(
-        unit_types.defender_1.u_body,
+        unitTypes.defender1.uBody,
         undefined,
-        unit_types.defender_1.u_mem);
+        unitTypes.defender1.uMem);
     }
   }
 
-  // Lets try to ID these things that don't have unit_types definitions
+  // Lets try to ID these things that don't have unitTypes definitions
   if (populationUnknown.length > 0) {
     for (const i in populationUnknown) {
       const creep = populationUnknown[i];
       const bodyStyle = creep.body.map((val) => {
         return val.type;
       });
-      for (const creepType in unit_types) {
-        console.log(unit_types.worker_1.u_body);
-        console.log(unit_types[creepType].u_body);
-        console.log(unit_types.worker_1.u_body);
-        if (equals(bodyStyle, unit_types[creepType].u_body)) {
+      for (const creepType in unitTypes) {
+        console.log(unitTypes.worker1.uBody);
+        console.log(unitTypes[creepType].uBody);
+        console.log(unitTypes.worker1.uBody);
+        if (equals(bodyStyle, unitTypes[creepType].uBody)) {
           console.log('Identified a creep!');
-          creep.memory = unit_types[creepType].u_mem;
+          creep.memory = unitTypes[creepType].uMem;
         }
       }
     }
@@ -209,7 +209,7 @@ function spawn_units(currentRoom: Room) {
     const nextLevel = worstLevel + 1 > maxLevel ?
       maxLevel : worstLevel + 1;
     // console.log(worstLevel, nextLevel, maxLevel)
-    if (maxBuildEnergy > unit_types['worker_' + nextLevel].u_cost) {
+    if (maxBuildEnergy > unitTypes['worker' + nextLevel].uCost) {
       if (worstCreep.memory.lvl && worstCreep.memory.lvl < nextLevel) {
         console.log(worstCreep.name, 'is due for an upgrade!');
         worstCreep.memory.role = 'upgrade';

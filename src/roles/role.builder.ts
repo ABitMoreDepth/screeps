@@ -17,6 +17,18 @@ export function builder(creep: Creep) {
   }
 
   if (creep.memory.state) {
+    const urgentRepairTarget: Structure | null = creep.pos.findClosestByRange(FIND_STRUCTURES, {
+      filter: (structure) => (
+        structure.hits < 1000
+      )
+    });
+    if (urgentRepairTarget !== null) {
+      if (creep.repair(urgentRepairTarget) === ERR_NOT_IN_RANGE) {
+        creep.moveTo(urgentRepairTarget);
+        return;
+      }
+    }
+
     const buildTarget = creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES);
     if (buildTarget !== null) {
       if (creep.build(buildTarget) === ERR_NOT_IN_RANGE) {
