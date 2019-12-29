@@ -14,7 +14,7 @@ interface CreepMemory {
 interface Memory {
   population: any;
   defense: { wall_health: number };
-  socialStructure: Array<string>;
+  socialStructure: string[];
 }
 
 // `global` extension samples

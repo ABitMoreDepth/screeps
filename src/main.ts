@@ -9,14 +9,14 @@ export const loop = ErrorMapper.wrapLoop(() => {
   console.log(`Current game tick is ${Game.time}`);
 
   // Manage creeps & Towers room by room
-  for (let room in Game.rooms) {
-    let current_room = Game.rooms[room]
-    creepManager.manage(current_room)
-    towerManager.manage(current_room)
+  for (const room in Game.rooms) {
+    const currentRoom = Game.rooms[room];
+    creepManager.manage(currentRoom);
+    towerManager.manage(currentRoom);
   }
 
   // Run creeps globally
-  creepManager.run()
+  creepManager.run();
 
   // Automatically delete memory of missing creeps
   for (const name in Memory.creeps) {

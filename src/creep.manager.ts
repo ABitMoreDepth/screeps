@@ -1,218 +1,218 @@
-import { roles } from './roles/roles';
 import { unit_types } from './creep.types';
-import { getSpawn, equals } from './utils/common';
+import { roles } from './roles/roles';
+import { equals, getSpawn } from './utils/common';
 
 if (!Memory.defense) {
   Memory.defense = {
-    wall_health: 5000
-  }
+    wall_health: 1000
+  };
 }
 
 export let creepManager = {
-  manage: function (current_room: Room) {
-    undertaker()
-    spawn_units(current_room)
-    workersUnion()
+  manage(currentRoom: Room) {
+    undertaker();
+    spawn_units(currentRoom);
+    workersUnion();
   },
 
-  run: function () {
-    for (let name in Game.creeps) {
+  run() {
+    for (const name in Game.creeps) {
       // Run our creeps behaviour
-      let creep = Game.creeps[name]
+      const creep = Game.creeps[name];
       if (creep.memory.role) {
         try {
           // console.log(creep.name, ', Role:', creep.memory.role)
-          roles[creep.memory.role](creep)
+          roles[creep.memory.role](creep);
         } catch (err) {
           console.log(creep.name, 'caught amnesia, former role:',
-            creep.memory.role, ', unsetting role:', err)
-          delete creep.memory['role']
+            creep.memory.role, ', unsetting role:', err);
+          delete creep.memory.role;
         }
       }
     }
   }
-}
+};
 
 function undertaker() {
-  for (let name in Memory.creeps) {
+  for (const name in Memory.creeps) {
     if (!Game.creeps[name]) {
-      delete Memory.creeps[name]
-      console.log('Today we mourn the passing of', name)
+      delete Memory.creeps[name];
+      console.log('Today we mourn the passing of', name);
     }
-    let creep = Game.creeps[name]
+    const creep = Game.creeps[name];
     if (creep) {
-      if (creep.ticksToLive !== undefined && creep.ticksToLive < 100 && creep.memory.role != 'regenerate') {
+      if (creep.ticksToLive !== undefined && creep.ticksToLive < 100 && creep.memory.role !== 'regenerate') {
         console.log(creep.name, 'is getting old and is finally '
-          + 'entitled to some regeneration!')
-        creep.memory.role = 'regenerate'
+          + 'entitled to some regeneration!');
+        creep.memory.role = 'regenerate';
       }
     }
   }
 }
 
-function spawn_units(current_room: Room) {
-  let max_build_energy = current_room.energyCapacityAvailable
-  console.log(JSON.stringify(current_room))
-  console.log('max:', max_build_energy, 'Available:',
-    current_room.energyAvailable)
+function spawn_units(currentRoom: Room) {
+  const maxBuildEnergy = currentRoom.energyCapacityAvailable;
+  console.log(JSON.stringify(currentRoom));
+  console.log('max:', maxBuildEnergy, 'Available:',
+    currentRoom.energyAvailable);
 
-  let needed_workers = Memory.population.builder
+  const neededWorkers = Memory.population.builder
     + Memory.population.harvester
     + Memory.population.upgrader
     + Memory.population.hauler
-    + Memory.population.extractor || 0
-  let needed_fighters = Memory.population.defender || 0
+    + Memory.population.extractor || 0;
+  const neededFighters = Memory.population.defender || 0;
 
-  let population_workers = _.filter(
+  const populationWorkers = _.filter(
     Game.creeps, (creep) => (
-      creep.memory.unit_type == 'worker'
-      && creep.memory.role != 'upgrade'
+      creep.memory.unit_type === 'worker'
+      && creep.memory.role !== 'upgrade'
     )
-  )
+  );
 
-  let population_regenerates = _.filter(
+  const populationRegenerates = _.filter(
     Game.creeps, (creep) => (
-      creep.memory.role == 'regenerate'
+      creep.memory.role === 'regenerate'
     )
-  )
+  );
 
-  let population_fighters = _.filter(Game.creeps, (creep) =>
-    creep.memory.unit_type == 'defender'
-  )
+  const populationFighters = _.filter(Game.creeps, (creep) =>
+    creep.memory.unit_type === 'defender'
+  );
 
-  let population_unknown = _.filter(Game.creeps, (creep) =>
+  const populationUnknown = _.filter(Game.creeps, (creep) =>
     !creep.memory.unit_type
-  )
+  );
 
 
-  // console.log('Needed Workers:', needed_workers, 'Worker pop:',
-  //             population_workers.length)
-  // console.log('Needed Fighters:', needed_fighters, ', Fighter pop:',
-  //             population_fighters.length)
-  // console.log('Unknown Pop:', population_unknown.length)
+  // console.log('Needed Workers:', neededWorkers, 'Worker pop:',
+  //             populationWorkers.length)
+  // console.log('Needed Fighters:', neededFighters, ', Fighter pop:',
+  //             populationFighters.length)
+  // console.log('Unknown Pop:', populationUnknown.length)
 
-  if (population_workers.length < needed_workers
-    && population_regenerates.length == 0) {
+  if (populationWorkers.length < neededWorkers
+    && populationRegenerates.length === 0) {
     // We have a deficit of workers, lets spawn some more!
-    if (max_build_energy >= unit_types.worker_3.u_cost) {
+    if (maxBuildEnergy >= unit_types.worker_3.u_cost) {
       if (_.filter(
         Game.creeps, (creep) => (
-          creep.memory.role == Memory.socialStructure[0])
+          creep.memory.role === Memory.socialStructure[0])
       ).length < Memory.population[Memory.socialStructure[0]]
       ) {
         // We shouldn't really get here, but in case all our units are
         // dead or something...
-        console.log('Emergency Spawning lvl1 Worker')
-        let spawn: StructureSpawn | null = getSpawn();
-        if (spawn === null) { return }
-        let newby = spawn.createCreep(
+        console.log('Emergency Spawning lvl1 Worker');
+        const spawn: StructureSpawn | null = getSpawn();
+        if (spawn === null) { return; }
+        const newby = spawn.createCreep(
           unit_types.worker_1.u_body,
           undefined,
-          unit_types.worker_1.u_mem)
-        return
+          unit_types.worker_1.u_mem);
+        return;
       }
-      console.log('Spawning lvl3 Worker')
-      let spawn = getSpawn();
+      console.log('Spawning lvl3 Worker');
+      const spawn = getSpawn();
 
       if (spawn !== null) {
-        let newby = spawn.createCreep(
+        const newby = spawn.createCreep(
           unit_types.worker_3.u_body,
           undefined,
-          unit_types.worker_3.u_mem)
-        console.log(newby)
+          unit_types.worker_3.u_mem);
+        console.log(newby);
       }
     }
-    else if (max_build_energy >= unit_types.worker_2.u_cost) {
+    else if (maxBuildEnergy >= unit_types.worker_2.u_cost) {
       if (_.filter(
         Game.creeps, (creep) => (
-          creep.memory.role == Memory.socialStructure[0])
+          creep.memory.role === Memory.socialStructure[0])
       ).length < Memory.population[Memory.socialStructure[0]]
       ) {
         // We shouldn't really get here, but in case all our units are
         // dead or something...
-        console.log('Emergency Spawning lvl1 Worker')
-        let spawn = getSpawn();
+        console.log('Emergency Spawning lvl1 Worker');
+        const spawn = getSpawn();
         if (spawn !== null) {
-          let newby = spawn.createCreep(
+          const newby = spawn.createCreep(
             unit_types.worker_1.u_body,
             undefined,
-            unit_types.worker_1.u_mem)
-          return
+            unit_types.worker_1.u_mem);
+          return;
         }
       }
-      console.log('Spawning lvl2 Worker')
-      let spawn = getSpawn();
+      console.log('Spawning lvl2 Worker');
+      const spawn = getSpawn();
       if (spawn !== null) {
-        let newby = spawn.createCreep(
+        const newby = spawn.createCreep(
           unit_types.worker_2.u_body,
           undefined,
-          unit_types.worker_2.u_mem)
+          unit_types.worker_2.u_mem);
       }
     }
-    else if (max_build_energy >= unit_types.worker_1.u_cost) {
-      console.log('Spawning lvl1 Worker')
-      let spawn = getSpawn();
+    else if (maxBuildEnergy >= unit_types.worker_1.u_cost) {
+      console.log('Spawning lvl1 Worker');
+      const spawn = getSpawn();
       if (spawn !== null) {
-        let newby = spawn.createCreep(
+        const newby = spawn.createCreep(
           unit_types.worker_1.u_body,
           undefined,
-          unit_types.worker_1.u_mem)
+          unit_types.worker_1.u_mem);
       }
     }
   }
 
-  if (population_fighters.length < needed_fighters) {
+  if (populationFighters.length < neededFighters) {
     // We have a deficit of fighters, lets spawn some more!
-    let spawn = getSpawn();
+    const spawn = getSpawn();
     if (spawn !== null) {
-      let newby = spawn.createCreep(
+      const newby = spawn.createCreep(
         unit_types.defender_1.u_body,
         undefined,
-        unit_types.defender_1.u_mem)
+        unit_types.defender_1.u_mem);
     }
   }
 
-  //Lets try to ID these things that don't have unit_types definitions
-  if (population_unknown.length > 0) {
-    for (let i in population_unknown) {
-      let creep = population_unknown[i]
-      let body_style = creep.body.map(function (val) {
-        return val.type
-      })
-      for (let creep_type in unit_types) {
+  // Lets try to ID these things that don't have unit_types definitions
+  if (populationUnknown.length > 0) {
+    for (const i in populationUnknown) {
+      const creep = populationUnknown[i];
+      const bodyStyle = creep.body.map((val) => {
+        return val.type;
+      });
+      for (const creepType in unit_types) {
         console.log(unit_types.worker_1.u_body);
-        console.log(unit_types[creep_type]['u_body']);
-        console.log(unit_types['worker_1'].u_body);
-        if (equals(body_style, unit_types[creep_type].u_body)) {
+        console.log(unit_types[creepType].u_body);
+        console.log(unit_types.worker_1.u_body);
+        if (equals(bodyStyle, unit_types[creepType].u_body)) {
           console.log('Identified a creep!');
-          creep.memory = unit_types[creep_type].u_mem
+          creep.memory = unit_types[creepType].u_mem;
         }
       }
     }
   }
 
-  let most_important_workers = _.filter(
-    Game.creeps, (creep) => creep.memory.role == Memory.socialStructure[0]
-      || creep.memory.role == Memory.socialStructure[1])
-  if (most_important_workers.length >=
+  const mostImportantWorkers = _.filter(
+    Game.creeps, (creep) => creep.memory.role === Memory.socialStructure[0]
+      || creep.memory.role === Memory.socialStructure[1]);
+  if (mostImportantWorkers.length >=
     Memory.population[Memory.socialStructure[0]]
     + Memory.population[Memory.socialStructure[1]]
     && _.filter(Game.creeps,
-      (creep) => creep.memory.role == 'upgrade').length < 1) {
-    let worst_creep = _.min(
-      most_important_workers,
-      function (worker) {
-        return worker.memory.lvl
-      })
-    let worst_level = Number(worst_creep.memory.lvl)
-    let max_level = 3
-    let next_level = worst_level + 1 > max_level ?
-      max_level : worst_level + 1
-    // console.log(worst_level, next_level, max_level)
-    if (max_build_energy > unit_types['worker_' + next_level].u_cost) {
-      if (worst_creep.memory.lvl && worst_creep.memory.lvl < next_level) {
-        console.log(worst_creep.name, 'is due for an upgrade!')
-        worst_creep.memory.role = 'upgrade'
+      (creep) => creep.memory.role === 'upgrade').length < 1) {
+    const worstCreep = _.min(
+      mostImportantWorkers,
+      (worker) => {
+        return worker.memory.lvl;
+      });
+    const worstLevel = Number(worstCreep.memory.lvl);
+    const maxLevel = 3;
+    const nextLevel = worstLevel + 1 > maxLevel ?
+      maxLevel : worstLevel + 1;
+    // console.log(worstLevel, nextLevel, maxLevel)
+    if (maxBuildEnergy > unit_types['worker_' + nextLevel].u_cost) {
+      if (worstCreep.memory.lvl && worstCreep.memory.lvl < nextLevel) {
+        console.log(worstCreep.name, 'is due for an upgrade!');
+        worstCreep.memory.role = 'upgrade';
       }
     }
   }
@@ -221,62 +221,65 @@ function spawn_units(current_room: Room) {
 function workersUnion() {
 
   // Create a correctly padded list of roles to provide to creeps
-  let creeps_assignments = []
-  for (let unit_role in Memory.socialStructure) {
+  const screepsAssignments = [];
+  for (const unitRole in Memory.socialStructure) {
     for (let count = 0;
-      count < Memory.population[Memory.socialStructure[unit_role]];
+      count < Memory.population[Memory.socialStructure[unitRole]];
       count++) {
-      creeps_assignments.push(Memory.socialStructure[unit_role])
+      screepsAssignments.push(Memory.socialStructure[unitRole]);
     }
   }
-  console.log(`Creep assignmens: ${creeps_assignments}`);
+  console.log(`Creep assignmens: ${screepsAssignments}`);
 
   // Create an ordered list of creeps (hashes are not numbered)
-  let creeps_list = _.filter(
+  let creepsList = _.filter(
     Game.creeps, (creep) => (
-      creep.memory.unit_type == 'worker'
-      && creep.memory.role != 'regenerate'
-      && creep.memory.role != 'upgrade'
+      creep.memory.unit_type === 'worker'
+      && creep.memory.role !== 'regenerate'
+      && creep.memory.role !== 'upgrade'
     )
-  )
-  creeps_list = _.sortBy(
-    creeps_list,
+  );
+  creepsList = _.sortBy(
+    creepsList,
     [
-      function (creep: Creep) {
-        return creep.memory.lvl
+      (creep: Creep) => {
+        return creep.memory.lvl;
       }
     ]
-  )
+  );
 
-  for (let count in creeps_assignments) {
+  for (const count in screepsAssignments) {
     try {
-      if (creeps_list.length > 0) {
-        // let creep = Game.creeps[creeps_list.shift().name]
-        let creep = creeps_list.shift();
+      if (creepsList.length > 0) {
+        // let creep = Game.creeps[creepsList.shift().name]
+        const creep = creepsList.shift();
         if (creep !== undefined) {
-          creep.memory.role = creeps_assignments[count]
+          creep.memory.role = screepsAssignments[count];
         }
       } else {
-        break
+        break;
       }
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
   }
-  // if (creeps_assignments.length - 1 - count != 0) {
-  //   console.log('We have a ', creeps_assignments.length - 1 - count,
+  // if (screepsAssignments.length - 1 - count != 0) {
+  //   console.log('We have a ', screepsAssignments.length - 1 - count,
   //     'worker deficit!')
   // }
 
-  if (creeps_list.length > 0) {
-    console.log('We have a worker Surplus!')
-    for (let count = 0; count < creeps_list.length; count++) {
-      // let creep = Game.creeps[creeps_list.shift().name]
-      let creep = creeps_list.shift();
-      if (creep !== undefined) {
-        console.log(creep.name, 'is heading for retirement!')
-        creep.memory['role'] = 'recycle'
-      }
+  if (creepsList.length > 0) {
+    console.log('We have a worker Surplus!');
+    // for (let count = 0; count < creepsList.length; count++) {
+    for (const creep of creepsList) {
+      // let creep = Game.creeps[creepsList.shift().name]
+      // const creep = creepsList.shift();
+      // creepsList.shift();
+      // if (creep !== undefined) {
+      console.log(creep.name, 'is heading for retirement!');
+      creep.memory.role = 'recycle';
+      creepsList.shift();
+      // }
     }
   }
 }

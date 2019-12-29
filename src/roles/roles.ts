@@ -6,12 +6,12 @@ export let priority = [
   'hauler',
   'defender',
   'extractor'
-]
+];
 
 if (!Memory.socialStructure) {
-  Memory['socialStructure'] = priority
+  Memory.socialStructure = priority;
 } else {
-  Memory.socialStructure = priority
+  Memory.socialStructure = priority;
 }
 
 // Worker roles
@@ -47,6 +47,6 @@ export let roles: { [index: string]: (creep: Creep) => void } = {
   'defender': defender,
 
   // Misc
-  'regenerate': regenerate,
   'recycle': recycle,
-}
+  'regenerate': regenerate,
+};
