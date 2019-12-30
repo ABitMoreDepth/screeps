@@ -170,6 +170,15 @@ const extractor1: UnitType = {
   uMem: { unit_type: 'extractor', lvl: 1 },
 };
 
+const claimer1: UnitType = {
+  uBody: [
+    CLAIM,
+    MOVE,
+  ],
+  uCost: 600 + 50,
+  uMem: { unit_type: 'claimer', lvl: 1 },
+};
+
 export const unitTypes: { [index: string]: UnitType } = {
   worker1,
   worker2,
@@ -183,5 +192,7 @@ export const unitTypes: { [index: string]: UnitType } = {
 
   defender1,
 
-  extractor1
+  extractor1,
+
+  claimer1,
 };
