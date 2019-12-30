@@ -17,6 +17,10 @@
 # Screeps Config
 screeps.json
 
+# Multimeter Config
+screeps-multimeter.json
+.screeps-multimeter.history
+
 # ScreepsServer data from integration tests
 /server
 
@@ -89,3 +93,6 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+# CTags files
+tags
