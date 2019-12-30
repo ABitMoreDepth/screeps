@@ -8,6 +8,11 @@ export let towerManager = {
       return;
     }
 
+    if (tower.store.getUsedCapacity(RESOURCE_ENERGY) <= tower.store.getCapacity(RESOURCE_ENERGY) * 0.9) {
+      // Don't deplete reserves on maintenance beyond 90%.
+      return;
+    }
+
     const closestDamagedCreep: RoomObject | null = tower.pos.findClosestByRange(
       FIND_CREEPS, {
       filter: (creep) => creep.hits < creep.hitsMax
