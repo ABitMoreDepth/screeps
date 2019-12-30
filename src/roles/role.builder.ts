@@ -36,12 +36,16 @@ export function builder(creep: Creep) {
       return;
     }
 
-    let repairTarget: Structure | null = creep.pos.findClosestByRange(FIND_STRUCTURES, {
-      filter: (structure) => (
-        structure.hits < structure.hitsMax * 0.95 &&
-        structure.structureType !== STRUCTURE_WALL &&
-        structure.structureType !== STRUCTURE_RAMPART
-      )
+    const repairTarget: Structure | null = creep.pos.findClosestByRange(FIND_STRUCTURES, {
+      filter: (structure) => {
+        switch (structure.structureType) {
+          case STRUCTURE_RAMPART:
+          case STRUCTURE_WALL:
+            return structure.hits <= Memory.defense.wall_health;
+          default:
+            return structure.hits < structure.hitsMax * 0.95;
+        }
+      }
     });
     if (repairTarget !== null) {
       if (creep.repair(repairTarget) === ERR_NOT_IN_RANGE) {
@@ -50,21 +54,21 @@ export function builder(creep: Creep) {
       return;
     }
 
-    repairTarget = creep.pos.findClosestByRange(FIND_STRUCTURES,
-      {
-        filter: (structure) => (
-          structure.hits <= Memory.defense.wall_health &&
-          (structure.structureType === STRUCTURE_WALL ||
-            structure.structureType === STRUCTURE_RAMPART)
-        )
-      }
-    );
-    if (repairTarget !== null) {
-      if (creep.repair(repairTarget) === ERR_NOT_IN_RANGE) {
-        creep.moveTo(repairTarget);
-      }
-      return;
-    }
+    // repairTarget = creep.pos.findClosestByRange(FIND_STRUCTURES,
+    //   {
+    //     filter: (structure) => (
+    //       structure.hits <= Memory.defense.wall_health &&
+    //       (structure.structureType === STRUCTURE_WALL ||
+    //         structure.structureType === STRUCTURE_RAMPART)
+    //     )
+    //   }
+    // );
+    // if (repairTarget !== null) {
+    //   if (creep.repair(repairTarget) === ERR_NOT_IN_RANGE) {
+    //     creep.moveTo(repairTarget);
+    //   }
+    //   return;
+    // }
 
     creep.say('Chilling');
     goRelax(creep);
