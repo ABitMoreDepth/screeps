@@ -31,6 +31,9 @@ import { defender } from './role.defender';
 import { recycle } from './role.recycle';
 import { regenerate } from './role.regenerate';
 
+import { claim } from './role.claimer';
+
+
 export let roles: { [index: string]: (creep: Creep) => void } = {
 
   // Worker roles
@@ -47,6 +50,7 @@ export let roles: { [index: string]: (creep: Creep) => void } = {
   'defender': defender,
 
   // Misc
+  'claim': claim,
   'recycle': recycle,
   'regenerate': regenerate,
   'upgrade': recycle,
