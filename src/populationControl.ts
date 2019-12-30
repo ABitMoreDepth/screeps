@@ -1,15 +1,9 @@
 import { unitTypes } from "./creep.types";
-import { equals, getSpawn } from "./utils/common";
+import { equals, filterCreeps, getSpawn } from "./utils/common";
 
 // Schedule the creation of combat units, should they be necessary.
 function handleFighters(currentRoom: Room) {
-    const populationFighters = filterCreeps((creepName: string) => {
-        const creep = Game.creeps[creepName];
-        if (creep.memory.unit_type === "defender") {
-            return true;
-        }
-        return false;
-    });
+    const populationFighters = filterCreeps((creep) => creep.memory.unit_type === "defender");
 
     const neededFighters = Memory.population.defender || 0;
 
@@ -26,11 +20,11 @@ function handleFighters(currentRoom: Room) {
     }
 }
 
-export function spawnUnits(currentRoom: Room) {
-    const maxBuildEnergy = currentRoom.energyCapacityAvailable;
-    // console.log(JSON.stringify(currentRoom));
-    // console.log('max:', maxBuildEnergy, 'Available:',
-    //   currentRoom.energyAvailable);
+function handleWorkers(currentRoom: Room) {
+    const populationWorkers = filterCreeps(
+        (creep) => creep.memory.unit_type === "worker" && creep.memory.role !== "upgrade",
+    );
+
     let neededWorkers: number = 0;
     for (const workerType in Memory.population) {
         if (workerType === "defender") {
@@ -39,20 +33,12 @@ export function spawnUnits(currentRoom: Room) {
         neededWorkers += Memory.population[workerType];
     }
 
-    const populationWorkers = filterCreeps((creepName) => {
-        const creep = Game.creeps[creepName];
-        return creep.memory.unit_type === "worker" && creep.memory.role !== "upgrade";
-    });
-
-    const populationRegenerates = filterCreeps((creepName) => {
-        const creep = Game.creeps[creepName];
-        return creep.memory.role === "regenerate";
-    });
+    const populationRegenerates = filterCreeps((creep) => creep.memory.role === "regenerate");
 
     console.log(`Needed Workers: ${neededWorkers}, Worker pop: ${populationWorkers.length}`);
-    // console.log('Needed Fighters:', neededFighters, ', Fighter pop:',
-    //   populationFighters.length);
-    // console.log('Unknown Pop:', populationUnknown.length);
+
+    const maxBuildEnergy = currentRoom.energyCapacityAvailable;
+
     if (populationWorkers.length < neededWorkers && populationRegenerates.length === 0) {
         // We have a deficit of workers, lets spawn some more!
         if (maxBuildEnergy >= unitTypes.worker3.uCost) {
@@ -123,20 +109,16 @@ export function spawnUnits(currentRoom: Room) {
             }
         }
     }
+}
 
-    handleFighters(currentRoom);
+function handleUpgrades(currentRoom: Room) {
+    const maxBuildEnergy = currentRoom.energyCapacityAvailable;
 
-    const populationUnknown = filterCreeps((creepName: string) => {
-        const creep = Game.creeps[creepName];
-        return creep.memory.unit_type === undefined;
-    });
-    handleUnknowns(populationUnknown);
-
-    const mostImportantWorkers = _.filter(
-        Game.creeps,
+    const mostImportantWorkers = filterCreeps(
         (creep) =>
-            creep.memory.role === Memory.socialStructure[0] ||
-            creep.memory.role === Memory.socialStructure[1],
+            (creep.memory.role === Memory.socialStructure[0] ||
+                creep.memory.role === Memory.socialStructure[1]) &&
+            creep.room === currentRoom,
     );
     if (
         mostImportantWorkers.length >=
@@ -160,16 +142,9 @@ export function spawnUnits(currentRoom: Room) {
     }
 }
 
-// Take a filter arrow function, return a Creep[]
-function filterCreeps(filter: (creepName: string) => boolean): Creep[] {
-    const populationWorkers = Object.keys(Game.creeps)
-        .filter(filter)
-        .map((creepName) => Game.creeps[creepName]);
-    return populationWorkers;
-}
-
 // Lets try to ID these things that don't have unitTypes definitions
-function handleUnknowns(populationUnknown: Creep[]) {
+function handleUnknowns() {
+    const populationUnknown = filterCreeps((creep) => creep.memory.unit_type === undefined);
     if (populationUnknown.length > 0) {
         for (const i in populationUnknown) {
             const creep = populationUnknown[i];
@@ -185,4 +160,20 @@ function handleUnknowns(populationUnknown: Creep[]) {
             }
         }
     }
+}
+
+export function spawnUnits(currentRoom: Room) {
+    // console.log(JSON.stringify(currentRoom));
+    // console.log('max:', maxBuildEnergy, 'Available:',
+    //   currentRoom.energyAvailable);
+    // console.log('Needed Fighters:', neededFighters, ', Fighter pop:',
+    //   populationFighters.length);
+    // console.log('Unknown Pop:', populationUnknown.length);
+    handleUnknowns();
+
+    handleWorkers(currentRoom);
+
+    handleFighters(currentRoom);
+
+    handleUpgrades(currentRoom);
 }
