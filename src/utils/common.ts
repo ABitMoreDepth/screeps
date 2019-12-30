@@ -16,8 +16,7 @@ export function equals(array1: any[], array2: any[]): boolean {
       if (!array1[i].equals(array2[i])) {
         return false;
       }
-    }
-    else if (array1[i] !== array2[i]) {
+    } else if (array1[i] !== array2[i]) {
       // Warning - two different object instances will never be
       // equal: {x:20} != {x:20}
       return false;
@@ -26,42 +25,42 @@ export function equals(array1: any[], array2: any[]): boolean {
   return true;
 }
 
-export function harvest_nearest_energy(creep: Creep) {
+export function harvest_nearest_energy(creep: Creep): boolean {
   const source: Source | null = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
-  if (source === null) { return; }
+  if (source === null) {
+    return false;
+  }
 
   if (creep.harvest(source as Source) === ERR_NOT_IN_RANGE) {
     creep.moveTo(source as Source);
   }
+  return true;
 }
 
-export function find_nearest_energy_collection_point(creep: Creep): StructureStorage | StructureContainer | StructureSpawn | null {
+export function find_nearest_energy_collection_point(
+  creep: Creep,
+): StructureStorage | StructureContainer | StructureSpawn | null {
   let source: RoomObject | null = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-    filter: (structure) => (
-      structure.structureType === STRUCTURE_STORAGE &&
-      structure.store[RESOURCE_ENERGY] > 0
-    )
+    filter: (structure) =>
+      structure.structureType === STRUCTURE_STORAGE && structure.store[RESOURCE_ENERGY] > 0,
   });
   if (source !== null) {
     return null;
   }
 
   source = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-    filter: (structure) => (
-      structure.structureType === STRUCTURE_CONTAINER
-      && structure.store[RESOURCE_ENERGY] > 0
-    )
+    filter: (structure) =>
+      structure.structureType === STRUCTURE_CONTAINER && structure.store[RESOURCE_ENERGY] > 0,
   });
   if (source !== null) {
     return source as StructureContainer;
   }
 
   source = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-    filter: (structure) => (
-      (structure.structureType === STRUCTURE_SPAWN
-        || structure.structureType === STRUCTURE_EXTENSION)
-      && structure.energy >= structure.energyCapacity * 0.8
-    )
+    filter: (structure) =>
+      (structure.structureType === STRUCTURE_SPAWN ||
+        structure.structureType === STRUCTURE_EXTENSION) &&
+      structure.energy >= structure.energyCapacity * 0.8,
   });
   if (source !== null) {
     return source as StructureSpawn;
@@ -87,9 +86,18 @@ export function goRelax(creep: Creep): void {
   }
 }
 
-export function getSpawn(): StructureSpawn | null {
+export function getSpawn(room?: Room): StructureSpawn | null {
   for (const i in Game.spawns) {
-    return Game.spawns[i];
+    const spawn = Game.spawns[i];
+    if (room !== undefined) {
+      if (spawn.room === room) {
+        return spawn;
+      } else {
+        continue;
+      }
+    } else {
+      return Game.spawns[i];
+    }
   }
   return null;
 }
@@ -104,9 +112,8 @@ export function get_flag(): Flag | null {
 export function get_full_extractor(creep: Creep): Creep | null {
   const source = creep.pos.findClosestByRange(FIND_MY_CREEPS, {
     filter: (extractor) => {
-      extractor.memory.role === 'harvester' &&
-        extractor.carry[RESOURCE_ENERGY] > 0;
-    }
+      return extractor.memory.role === "harvester" && extractor.carry[RESOURCE_ENERGY] > 0;
+    },
   });
 
   if (source !== null) {
