@@ -22,7 +22,7 @@ export function harvester(creep: Creep) {
   }
 
   if (creep.memory.state === 'fillup') {
-    const target = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+    let target = creep.pos.findClosestByPath(FIND_STRUCTURES, {
       filter: (structure) => {
         return (
           structure.structureType === STRUCTURE_TOWER &&
@@ -34,41 +34,42 @@ export function harvester(creep: Creep) {
       if (creep.transfer(target as StructureTower, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
         creep.moveTo(target);
       }
+      return;
     }
-    else {
-      const target: RoomObject | null = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-        filter: (structure) => {
-          return (
-            (structure.structureType === STRUCTURE_EXTENSION
-              || structure.structureType === STRUCTURE_SPAWN)
-            && structure.energy < structure.energyCapacity);
-        }
-      });
-      if (target !== null) {
-        if (creep.transfer(target as StructureSpawn, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-          creep.moveTo(target);
-        }
+
+    target = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+      filter: (structure) => {
+        return (
+          (structure.structureType === STRUCTURE_EXTENSION
+            || structure.structureType === STRUCTURE_SPAWN)
+          && structure.energy < structure.energyCapacity);
       }
-      else {
-        const target: RoomObject | null = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-          filter: (structure) => {
-            return (
-              (structure.structureType === STRUCTURE_STORAGE
-                || structure.structureType === STRUCTURE_CONTAINER)
-              && structure.store[RESOURCE_ENERGY]
-              < structure.storeCapacity
-            );
-          }
-        });
-        if (target !== null) {
-          if (creep.transfer(target as StructureStorage | StructureContainer, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-            creep.moveTo(target);
-          }
-        } else {
-          goRelax(creep);
-        }
+    });
+    if (target !== null) {
+      if (creep.transfer(target as StructureSpawn, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+        creep.moveTo(target);
       }
+      return;
     }
+
+    target = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+      filter: (structure) => {
+        return (
+          (structure.structureType === STRUCTURE_STORAGE
+            || structure.structureType === STRUCTURE_CONTAINER)
+          && structure.store[RESOURCE_ENERGY]
+          < structure.storeCapacity
+        );
+      }
+    });
+    if (target !== null) {
+      if (creep.transfer(target as StructureStorage | StructureContainer, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+        creep.moveTo(target);
+      }
+      return;
+    }
+
+    goRelax(creep);
   }
   else {
     let target: RoomObject | null = creep.pos.findClosestByPath(FIND_RUINS, {
@@ -107,7 +108,10 @@ export function harvester(creep: Creep) {
       return;
     }
 
-    harvest_nearest_energy(creep);
+    const harvestResult = harvest_nearest_energy(creep);
+    if (!harvestResult) {
+      goRelax(creep);
+    }
   }
 }
 
