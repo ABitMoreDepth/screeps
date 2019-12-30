@@ -1,4 +1,4 @@
-import { find_nearest_energy_collection_point, get_full_extractor } from '../utils/common';
+import { find_nearest_energy_collection_point, get_full_extractor, goRelax } from '../utils/common';
 
 if (!Memory.population) {
   Memory.population = {
@@ -9,6 +9,9 @@ if (!Memory.population) {
 }
 
 export function distributor(creep: Creep) {
+  if (creep.memory.state === undefined || !creep.memory.state.toString().match(/^distribute|refill$/)) {
+    creep.memory.state = 'refill';
+  }
   if (creep.memory.state === 'distribute' && creep.carry.energy === 0) {
     creep.memory.state = 'refill';
   }
@@ -16,57 +19,64 @@ export function distributor(creep: Creep) {
     creep.memory.state = 'distribute';
   }
 
-  if (creep.memory.state !== 'distribute') {
-    const source = get_full_extractor(creep);
+  if (creep.memory.state === 'refill') {
+    const extractorSource = get_full_extractor(creep);
+    if (extractorSource !== null) {
+      // console.log(JSON.stringify(extractorSource));
+      if (extractorSource.transfer(creep, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+        creep.moveTo(extractorSource);
+      }
+      return;
+    }
+
+    const source = find_nearest_energy_collection_point(creep);
     if (source !== null) {
-      console.log(JSON.stringify(source));
-      if (source.transfer(creep, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+      if (creep.withdraw(source, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
         creep.moveTo(source);
       }
-    }
-    else {
-      const source = find_nearest_energy_collection_point(creep);
-
-      if (source !== null) {
-        if (creep.withdraw(source, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-          creep.moveTo(source);
-        }
-      }
+      return;
     }
   }
 
-  if (creep.memory.state) {
+  if (creep.memory.state === 'distribute') {
     const target = creep.pos.findClosestByPath(FIND_STRUCTURES, {
       filter: (structure) => {
-        return (
-          (structure.structureType === STRUCTURE_EXTENSION
-            || structure.structureType === STRUCTURE_SPAWN)
-          && structure.energy < structure.energyCapacity);
+        switch (structure.structureType) {
+          case STRUCTURE_EXTENSION:
+          case STRUCTURE_SPAWN:
+            return structure.energy < structure.energyCapacity;
+          case STRUCTURE_TOWER:
+            return structure.energy < structure.energyCapacity;
+          case STRUCTURE_CONTAINER:
+            return structure.store.energy < structure.store.getCapacity(RESOURCE_ENERGY);
+          default:
+            return false;
+        }
       }
     });
-    if (target) {
+    if (target !== null) {
       if (creep.transfer(target, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
         creep.moveTo(target);
       }
+      return;
     }
-    else {
-      const target = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-        filter: (structure) => {
-          return (
-            (structure.structureType === STRUCTURE_TOWER)
-            && structure.energy < structure.energyCapacity
-          );
-        }
-      });
-      if (target) {
-        if (creep.transfer(target, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-          creep.moveTo(target);
-        }
-      }
-      else {
-        creep.moveTo(Game.flags.Chillout);
-      }
-    }
+    // target = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+    //   filter: (structure) => {
+    //     return (
+    //       (structure.structureType === STRUCTURE_TOWER)
+    //       && structure.energy < structure.energyCapacity
+    //     );
+    //   }
+    // });
+    // if (target !== null) {
+    //   if (creep.transfer(target, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+    //     creep.moveTo(target);
+    //   }
+    //   return;
+    // }
+    // else {
+    creep.moveTo(Game.flags.Chillout);
+    // }
   }
 }
 
