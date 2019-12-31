@@ -31,3 +31,9 @@ interface CreepBehaviour {
 
     run: () => void;
 }
+
+interface UnitType {
+    uBody: BodyPartConstant[];
+    uMem: CreepMemory;
+    uCost: number;
+}
