@@ -11,16 +11,13 @@ function handleFighters(currentRoom: Room) {
         // We have a deficit of fighters, lets spawn some more!
         const spawn = getSpawn(currentRoom);
         if (spawn !== null) {
-            const newby = spawn.createCreep(
-                unitTypes.defender1.uBody,
-                undefined,
-                unitTypes.defender1.uMem,
-            );
+            spawn.createCreep(unitTypes.defender1.uBody, undefined, unitTypes.defender1.uMem);
         }
     }
 }
 
 function handleWorkers(currentRoom: Room) {
+    const spawn = getSpawn(currentRoom);
     const populationWorkers = filterCreeps(
         (creep) => creep.memory.unit_type === "worker" && creep.memory.role !== "upgrade",
     );
@@ -40,6 +37,7 @@ function handleWorkers(currentRoom: Room) {
     const maxBuildEnergy = currentRoom.energyCapacityAvailable;
 
     if (populationWorkers.length < neededWorkers && populationRegenerates.length === 0) {
+        console.log(`Attempting to build a creep. ${maxBuildEnergy} energy available`);
         // We have a deficit of workers, lets spawn some more!
         if (maxBuildEnergy >= unitTypes.worker3.uCost) {
             if (
@@ -49,19 +47,13 @@ function handleWorkers(currentRoom: Room) {
                 // We shouldn't really get here, but in case all our units are
                 // dead or something...
                 console.log("Emergency Spawning lvl1 Worker");
-                const spawn: StructureSpawn | null = getSpawn();
                 if (spawn === null) {
                     return;
                 }
-                const newby = spawn.createCreep(
-                    unitTypes.worker1.uBody,
-                    undefined,
-                    unitTypes.worker1.uMem,
-                );
+                spawn.createCreep(unitTypes.worker1.uBody, undefined, unitTypes.worker1.uMem);
                 return;
             }
             console.log("Spawning lvl3 Worker");
-            const spawn = getSpawn();
             if (spawn !== null) {
                 const newby = spawn.createCreep(
                     unitTypes.worker3.uBody,
@@ -78,34 +70,21 @@ function handleWorkers(currentRoom: Room) {
                 // We shouldn't really get here, but in case all our units are
                 // dead or something...
                 console.log("Emergency Spawning lvl1 Worker");
-                const spawn = getSpawn();
                 if (spawn !== null) {
-                    const newby = spawn.createCreep(
-                        unitTypes.worker1.uBody,
-                        undefined,
-                        unitTypes.worker1.uMem,
-                    );
+                    spawn.createCreep(unitTypes.worker1.uBody, undefined, unitTypes.worker1.uMem);
                     return;
                 }
             }
             console.log("Spawning lvl2 Worker");
-            const spawn = getSpawn();
             if (spawn !== null) {
-                const newby = spawn.createCreep(
-                    unitTypes.worker2.uBody,
-                    undefined,
-                    unitTypes.worker2.uMem,
-                );
+                spawn.createCreep(unitTypes.worker2.uBody, undefined, unitTypes.worker2.uMem);
+                return;
             }
         } else if (maxBuildEnergy >= unitTypes.worker1.uCost) {
             console.log("Spawning lvl1 Worker");
-            const spawn = getSpawn();
             if (spawn !== null) {
-                const newby = spawn.createCreep(
-                    unitTypes.worker1.uBody,
-                    undefined,
-                    unitTypes.worker1.uMem,
-                );
+                spawn.createCreep(unitTypes.worker1.uBody, undefined, unitTypes.worker1.uMem);
+                return;
             }
         }
     }
