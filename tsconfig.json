@@ -1,17 +1,19 @@
 {
   "compilerOptions": {
-    "module": "esnext",
-    "lib": ["esnext"],
-    "target": "es2017",
-    "moduleResolution": "Node",
-    "outDir": "dist",
+    "allowSyntheticDefaultImports": true,
+    "allowUnreachableCode": false,
     "baseUrl": "src/",
+    "experimentalDecorators": true,
+    "forceConsistentCasingInFileNames": true,
+    "lib": ["esnext"],
+    "module": "esnext",
+    "moduleResolution": "Node",
+    "noImplicitReturns": true,
+    // "noUnusedLocals": true,
+    "outDir": "dist",
     "sourceMap": true,
     "strict": true,
-    "experimentalDecorators": true,
-    "noImplicitReturns": true,
-    "allowSyntheticDefaultImports": true,
-    "allowUnreachableCode": false
+    "target": "es2017",
   },
   "exclude": [
     "node_modules"
