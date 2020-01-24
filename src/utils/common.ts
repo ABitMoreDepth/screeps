@@ -39,13 +39,13 @@ export function harvest_nearest_energy(creep: Creep): boolean {
 
 export function find_nearest_energy_collection_point(
     creep: Creep,
-): StructureStorage | StructureContainer | StructureSpawn | null {
+): StructureStorage | StructureContainer | StructureSpawn | StructureExtension | null {
     let source: RoomObject | null = creep.pos.findClosestByPath(FIND_STRUCTURES, {
         filter: (structure) =>
             structure.structureType === STRUCTURE_STORAGE && structure.store[RESOURCE_ENERGY] > 0,
     });
     if (source !== null) {
-        return null;
+        return source as StructureStorage;
     }
 
     source = creep.pos.findClosestByPath(FIND_STRUCTURES, {
