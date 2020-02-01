@@ -59,6 +59,7 @@ const carrier4 = new UnitDefinition(
 
 const defender1 = new UnitDefinition([TOUGH, RANGED_ATTACK, RANGED_ATTACK, MOVE, MOVE], {
     lvl: 1,
+    role: "defender",
     unit_type: "defender",
 });
 
