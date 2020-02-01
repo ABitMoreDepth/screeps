@@ -79,7 +79,16 @@ export function collectNearestEnergy(creep: Creep): void {
     }
 }
 
-export function goRelax(creep: Creep): void {
+export function goRelax(creep: Creep, military: boolean = false): void {
+    if (military) {
+        const militaryFlags = creep.room.find(FIND_FLAGS, {
+            filter: (flagResult) => flagResult.name.startsWith("mil"),
+        });
+        if (militaryFlags.length > 0) {
+            creep.moveTo(militaryFlags[0]);
+            return;
+        }
+    }
     const flag = creep.pos.findClosestByRange(FIND_FLAGS);
     if (flag !== null) {
         creep.moveTo(flag);
