@@ -2,9 +2,12 @@ import { CreepPartMatrix } from "../utils/creepPartCosts";
 
 export class Worker implements UnitType {
     private static bodyBase: BodyPartConstant[] = [MOVE, MOVE, CARRY, WORK];
-    private lvl: number = 1;
+    public lvl: number;
+    private workerMemory: CreepMemory;
 
-    public uMem: CreepMemory = { unit_type: "worker", lvl: this.lvl };
+    get uMem(): CreepMemory {
+        return Object.assign({ unit_type: "worker", lvl: this.lvl }, this.workerMemory);
+    }
 
     get uBody(): BodyPartConstant[] {
         const body: BodyPartConstant[] = [];
@@ -24,8 +27,17 @@ export class Worker implements UnitType {
 
     constructor(lvl?: number, initialMemory?: CreepMemory) {
         Object.assign(this.uMem, initialMemory);
-        if (lvl) {
+        if (initialMemory !== undefined) {
+            this.workerMemory = initialMemory;
+        } else {
+            this.workerMemory = {};
+        }
+        if (lvl !== undefined) {
             this.lvl = lvl;
+            // Object.assign(this.lvl, lvl);
+        } else {
+            // Object.assign(this.lvl, 1);
+            this.lvl = 1;
         }
     }
 
@@ -34,6 +46,6 @@ export class Worker implements UnitType {
             .map((part) => CreepPartMatrix[part.toUpperCase()])
             .reduce((acc, part) => (acc += part));
 
-        return Math.floor(energyAvailable / baseCost);
+        return _.max([Math.floor(energyAvailable / baseCost), 1]);
     }
 }
